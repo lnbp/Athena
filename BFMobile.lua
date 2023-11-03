@@ -1140,3 +1140,6 @@ function CheckQuest2(LevelFarm)
 		end
 	end
 end
+
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Athena | V1.0", HidePremium = false, SaveConfig = false, ConfigFolder = "BFMobile"})
