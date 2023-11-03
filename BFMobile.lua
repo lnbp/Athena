@@ -1142,4 +1142,4 @@ function CheckQuest2(LevelFarm)
 end
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/lnbp/Athena/main/Ui.lua')))()
-local Window = OrionLib:MakeWindow({Name = "Athena | V1.0.0", HidePremium = false, SaveConfig = false, ConfigFolder = "BFMobile"})
+local Window = OrionLib:MakeWindow({Name = "Athena - Blox Fruits | V1.0.0", HidePremium = false, SaveConfig = false, ConfigFolder = "BFMobile"})
