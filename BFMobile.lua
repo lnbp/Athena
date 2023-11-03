@@ -1143,3 +1143,23 @@ end
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/lnbp/Athena/main/Ui.lua')))()
 local Window = OrionLib:MakeWindow({Name = "Athena - Blox Fruits | V1.0.0", HidePremium = false, SaveConfig = false, ConfigFolder = "BFMobile"})
+local MainTab = Window:MakeTab({
+	Name = "Main",
+	Icon = "",
+	PremiumOnly = false
+})
+
+local Main = MainTab:AddSection({
+	Name = "Main"
+})
+
+Main:AddToggle({
+	Name = "Level",
+	Default = false,
+	Callback = function(Value)
+		_G.Level = Value
+		if Value == false then
+			toTarget(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
+		end
+	end
+})
