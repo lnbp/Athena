@@ -54,7 +54,7 @@ end
 LPH_JIT_MAX(function()
 	task.spawn(function()
 		game:GetService("RunService").Stepped:Connect(function()
-            if _G.Level then
+            if _G.Auto_Complete_Quest then
                 if game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                     if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyVelocity1") then
                         local BodyVelocity = Instance.new("BodyVelocity")
@@ -108,7 +108,7 @@ end)()
 LPH_JIT_MAX(function()
 	task.spawn(function()
 		while task.wait() do
-            if _G.Level then
+            if _G.Auto_Complete_Quest then
                 for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     if not string.find(v.Name,"Boss") and (v.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 500 then
                         if InMyNetWork(v.HumanoidRootPart) then
@@ -1142,7 +1142,7 @@ function CheckQuest2(LevelFarm)
 end
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/lnbp/Athena/main/Ui.lua')))()
-local Window = OrionLib:MakeWindow({Name = "Athena - Blox Fruits | V1.0.0", HidePremium = false, SaveConfig = false, ConfigFolder = "BFMobile"})
+local Window = OrionLib:MakeWindow({Name = "Athena - Mobile", HidePremium = false, SaveConfig = false, ConfigFolder = "BFMobile"})
 local MainTab = Window:MakeTab({
 	Name = "Main",
 	Icon = "",
@@ -1154,12 +1154,157 @@ local Main = MainTab:AddSection({
 })
 
 Main:AddToggle({
-	Name = "Level",
+	Name = "Auto Complete Quest",
 	Default = false,
 	Callback = function(Value)
-		_G.Level = Value
+		_G.Auto_Complete_Quest = Value
 		if Value == false then
 			toTarget(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
 		end
 	end
 })
+
+LPH_JIT_MAX(function()
+	function AutoFarmLevel()
+		GetQuestTitle = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title
+		GetQuest = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest
+
+		if not string.find(GetQuestTitle.Text, NameMon) then game:GetService("ReplicatedStorage"):WaitForChild("Remotes").CommF_:InvokeServer("AbandonQuest"); end
+		if GetQuest.Visible == false then
+			Quest_Tween = toTarget(CFrameQuest.Position, CFrameQuest)
+			if FirstSea and (Name == "Fishman Commando [Lv. 400]" or Name == "Fishman Warrior [Lv. 375]") and (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > 50000 then
+				if Quest_Tween then Quest_Tween:Stop() end task.wait(.5)
+				game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(61163, 11, 1819))
+			elseif FirstSea and not (Name == "Fishman Commando [Lv. 400]" or Name == "Fishman Warrior [Lv. 375]") and (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > 50000 then
+				if Quest_Tween then Quest_Tween:Stop() end task.wait(.5)
+				game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(3864, 6, -1926))
+			elseif SecondSea and string.find(Name, "Ship") and (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > 30000 then
+				if Quest_Tween then Quest_Tween:Stop() end task.wait(.5)
+				game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(923, 126, 32852))
+			elseif SecondSea and not string.find(Name, "Ship") and (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > 30000 then
+				if Quest_Tween then Quest_Tween:Stop() end task.wait(.5)
+				game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-6508, 89, -132))
+			elseif (CFrameQuest.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 250 then
+				if Quest_Tween then Quest_Tween:Stop() end
+				game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrameQuest
+				task.wait(1)
+				if game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0 then
+					Com("F_","StartQuest", QuestName, LevelQuest)
+					Com("F_","SetSpawnPoint")
+				end
+			end
+		elseif GetQuest.Visible == true then
+			if game:GetService("Workspace").Enemies:FindFirstChild(Name) then
+				for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+					if _G.Auto_Complete_Quest and v.Name == Name and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+						if string.find(GetQuestTitle.Text, NameMon) then
+							repeat task.wait()
+								EquipWeapon(_G.Weapon_Type)
+								PosMon = v.HumanoidRootPart.CFrame
+								v.Humanoid.JumpPower = 0
+								v.Humanoid.WalkSpeed = 0
+								v.HumanoidRootPart.Size = Vector3.new(1, 1, 1)
+								v.HumanoidRootPart.Transparency = 1
+								v.HumanoidRootPart.CanCollide = false
+								v.Head.CanCollide = false
+								if v.Humanoid:FindFirstChild("Animator") then
+									v.Humanoid.Animator:Destroy()
+								end
+								v.Humanoid:ChangeState(11)
+								v.Humanoid:ChangeState(14)
+								toTarget(v.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0))
+							until not game:GetService("Workspace").Enemies:FindFirstChild(Name) or not _G.Auto_Complete_Quest or not string.find(GetQuestTitle.Text, NameMon) or v.Humanoid.Health <= 0 or not v.Parent or GetQuest.Visible == false
+						else
+							Com("F_","AbandonQuest")
+						end
+					end
+				end
+			else
+				if not string.find(GetQuestTitle.Text, NameMon) then Com("F_","AbandonQuest"); end
+				Mods_Tween = toTarget(CFrameMon.Position, CFrameMon)
+				if FirstSea and (Name == "Fishman Commando [Lv. 400]" or Name == "Fishman Warrior [Lv. 375]") and (CFrameMon.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > 50000 then
+					if Mods_Tween then Mods_Tween:Stop() end task.wait(.5)
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(61163, 11, 1819))
+				elseif FirstSea and not (Name == "Fishman Commando [Lv. 400]" or Name == "Fishman Warrior [Lv. 375]") and (CFrameMon.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > 50000 then
+					if Mods_Tween then Mods_Tween:Stop() end task.wait(.5)
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(3864, 6, -1926))
+				elseif SecondSea and string.find(Name, "Ship") and (CFrameMon.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > 30000 then
+					if Mods_Tween then Mods_Tween:Stop() end task.wait(.5)
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(923, 126, 32852))
+				elseif SecondSea and not string.find(Name, "Ship") and (CFrameMon.Position - game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude > 30000 then
+					if Mods_Tween then Mods_Tween:Stop() end task.wait(.5)
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-6508, 89, -132))
+				elseif (CFrameMon.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 250 then
+					if Mods_Tween then Mods_Tween:Stop() end
+					game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrameMon
+				end
+			end
+		end
+	end
+end)()
+
+LPH_JIT_MAX(function()
+	function CheckNotifyComplete()
+		for i, v in pairs(game:GetService("Players")["LocalPlayer"].PlayerGui:FindFirstChild("Notifications"):GetChildren()) do
+			if v.Name == "NotificationTemplate" then
+				if string.lower(v.Text):find("quest completed") then
+					v:Destroy()
+					return true
+				end
+			end
+		end
+		return false
+	end
+end)()
+
+local NoLoopDuplicate = false
+local SubQuest = false
+local oldmob = Name
+local oldcheckquest = NameMon
+
+LPH_JIT_MAX(function()
+	task.spawn(function()
+		while task.wait(.1) do
+			if _G.Auto_Complete_Quest then
+				if _G.Double_Quest then
+					if SubQuest == true then
+						if LevelFarm then
+							if tonumber(LevelFarm-1) ~= 0 then
+								CheckQuest2(tonumber(LevelFarm-1))
+							end
+						end
+					else
+						CheckQuest1()
+						oldmob = Name
+						oldcheckquest = NameMon
+						task.spawn(function()
+							if NoLoopDuplicate == false then
+								if CheckNotifyComplete() and _G.Auto_Complete_Quest then
+									NoLoopDuplicate = true
+									while wait() do
+										SubQuest = true
+										if CheckNotifyComplete() or _G.Auto_Complete_Quest == false then
+											break
+										end
+									end
+									SubQuest = false
+									NoLoopDuplicate = false
+								end
+							end
+						end)
+						if SubQuest == true then
+							if LevelFarm then
+								if tonumber(LevelFarm-1) ~= 0 then
+									CheckQuest2(tonumber(LevelFarm-1))
+								end
+							end
+						end
+					end
+				else
+					CheckQuest1()
+				end
+				AutoFarmLevel()
+			end
+		end
+	end)
+end)()
